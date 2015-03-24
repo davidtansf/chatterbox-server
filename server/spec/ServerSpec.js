@@ -96,11 +96,16 @@ it('Should respond with messages that were previously posted', function() {
     handler.requestHandler(req, res);
 
     expect(res._responseCode).to.equal(200);
-    var messages = JSON.parse(res._data);//.results;
-    console.log("RESPONSE MESSAGESSSSS: ", messages);
+    var messages = JSON.parse(res._data).results;
+    console.log("RESPONSE MESSAGES FROM GET: ", messages);
+    console.log("MESSAGES LENGTH: ", messages.length);
+    console.log("MESSAGES AT O: ", messages[0]);
+    console.log("TYPEOF AT O: ", typeof JSON.parse(messages[0]));
+    console.log("MESSAGES USERNAME: ", JSON.parse(messages[0]).username); // username
+    console.log("AND THE MESSAGE: ", JSON.parse(messages[0]).message);
     expect(messages.length).to.be.above(0);
-    expect(messages[0].username).to.equal('Jono');
-    expect(messages[0].message).to.equal('Do my bidding!');
+    expect((JSON.parse(messages[0])).username).to.equal('Jono');
+    expect((JSON.parse(messages[0])).message).to.equal('Do my bidding!');
     expect(res._ended).to.equal(true);
 
   });

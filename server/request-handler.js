@@ -104,7 +104,7 @@ var requestHandler = function(request, response) {
       obj.results.push(requestBody);
       var myPath=queryPath.path.slice(9);
       obj[myPath]["results"].push(requestBody);
-      console.log(obj);
+      console.log("ENTIRE OBJ: ", obj);
     });
 
     response.writeHead(201, headers);
