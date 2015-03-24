@@ -1,5 +1,6 @@
 var handler = require('../request-handler');
 var expect = require('../../node_modules/chai/chai').expect;
+//var describe = require('../../node_modules/mocha').describe;
 var basicServer = require('../basic-server').server;
 var stubs = require('./Stubs');
 
@@ -63,6 +64,7 @@ describe('Node Server Request Listener Function', function() {
       message: 'Do my bidding!'
     };
     var req = new stubs.request('/classes/room1', 'POST', stubMsg);
+
     var res = new stubs.response();
 
     handler.requestHandler(req, res);
@@ -85,12 +87,13 @@ it('Should respond with messages that were previously posted', function() {
     var res = new stubs.response();
 
     handler.requestHandler(req, res);
-
     expect(res._responseCode).to.equal(201);
 
     // Now if we request the log for that room the message we posted should be there:
     req = new stubs.request('/classes/room1', 'GET');
     res = new stubs.response();
+  //  console.log(url.parse(req.url, true));
+   // console.log("get url", req.pathname);
 
     handler.requestHandler(req, res);
 
@@ -100,6 +103,7 @@ it('Should respond with messages that were previously posted', function() {
     expect(messages[0].username).to.equal('Jono');
     expect(messages[0].message).to.equal('Do my bidding!');
     expect(res._ended).to.equal(true);
+
   });
 
 

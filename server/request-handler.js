@@ -11,7 +11,14 @@ this file and include it in basic-server.js so that it actually works.
 *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
 
 **************************************************************/
+var underscore = require('../node_modules/underscore/underscore.js');
 
+var url= require('url');
+
+var obj = {
+    results: []
+  };
+  var index=0;
 var requestHandler = function(request, response) {
   // Request and Response come from node's http module.
   //
@@ -28,6 +35,7 @@ var requestHandler = function(request, response) {
   // debugging help, but you should always be careful about leaving stray
   // console.logs in your code.
   console.log("Serving request type " + request.method + " for url " + request.url);
+  //console.log("request: ", request);
 
   // The outgoing status.
   var statusCode = 200;
@@ -40,10 +48,63 @@ var requestHandler = function(request, response) {
   // You will need to change this if you are sending something
   // other than plain text, like JSON or HTML.
   headers['Content-Type'] = "text/plain";
+  
+  
+
+  if (request.method === 'GET'){
+    //console.log(request.pathname);
+     //if input address invalid, then throw 404
+    var queryData=url.parse(request.url, true);
+    console.log(queryData.path);/// this will print 
+    response.writeHead(200, headers);
+    response.end(JSON.stringify(obj));
+  }
+
+  if (request.method === 'POST'){
+    //console.log(request.pathname);
+    //var queryData=url.parse(request.url, true);
+    //console.log("THIS IS THE URL PATHNAME: ", queryData);
+    var requestBody = '';
+    request.on('data', function(data) {
+      requestBody += data;
+      index++;
+      var queryPath=url.parse(request.url,true);
+      //var pathobj = { pathname: queryPath};
+       console.log("QUERYPATH: ", queryPath.path);
+       requestBody['path'] = queryPath.path;
+      // if (obj[queryPath]){
+      //   obj[queryPath].push(requestedBody);
+      // }
+      // else{ // if no url key matching, then need to construct a new one;
+      //   obj[queryPath]=[];
+      //   obj[queryPath].push(requestedBody);
+
+      // }
+      //underscore.extend(requestBody, pathobj);
+      console.log("REQUESTBBBODY: ", requestBody);
+      obj.results.push(requestBody);
+      console.log(obj);
+    });
+    response.writeHead(201, headers);
+    response.end(JSON.stringify(obj));
+  }
+
+  if (request.method === 'OPTIONS'){
+    //console.log(request.method);
+    response.writeHead(statusCode, headers);
+    response.end(JSON.stringify(obj));
+  }
+
+  if (request.method === 'ERROR'){
+    //console.log(request.method);
+    response.writeHead(404, headers);
+    response.end();
+  }
+
 
   // .writeHead() writes to the request line and headers of the response,
   // which includes the status and all headers.
-  response.writeHead(statusCode, headers);
+  //response.writeHead(statusCode, headers);
 
   // Make sure to always call response.end() - Node may not send
   // anything back to the client until you do. The string you pass to
@@ -52,7 +113,7 @@ var requestHandler = function(request, response) {
   //
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
-  response.end("Hello, World!");
+  
 };
 
 // These headers will allow Cross-Origin Resource Sharing (CORS).
@@ -70,4 +131,6 @@ var defaultCorsHeaders = {
   "access-control-allow-headers": "content-type, accept",
   "access-control-max-age": 10 // Seconds.
 };
+
+exports.requestHandler=requestHandler;
 
