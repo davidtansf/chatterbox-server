@@ -16,9 +16,20 @@ var underscore = require('../node_modules/underscore/underscore.js');
 var url= require('url');
 
 var obj = {
-    results: []
+    results: [], // puts all messages here, regardless of chatroom
+    room1: {
+      results: []
+    },
+    room2: {
+      results: []
+    },
+    Lobby: {
+      results: []
+    }
   };
-  var index=0;
+
+var index=0;
+
 var requestHandler = function(request, response) {
   // Request and Response come from node's http module.
   //
@@ -55,9 +66,18 @@ var requestHandler = function(request, response) {
     //console.log(request.pathname);
      //if input address invalid, then throw 404
     var queryData=url.parse(request.url, true);
-    console.log(queryData.path);/// this will print 
-    response.writeHead(200, headers);
-    response.end(JSON.stringify(obj));
+    console.log("LOGS path: ", queryData.path);/// this will print 
+    if (queryData.path.slice(9) === "messages") {
+      response.writeHead(200, headers);
+      response.end(JSON.stringify(obj)); 
+    } else if (!obj[queryData.path.slice(9)]) {
+      console.log ('ROOM NOT FOUND');
+      response.writeHead(404, headers); 
+      response.end();
+    } else {
+      response.writeHead(200, headers);
+      response.end(JSON.stringify(obj[queryData.path.slice(9)]));
+    }    
   }
 
   if (request.method === 'POST'){
@@ -70,8 +90,8 @@ var requestHandler = function(request, response) {
       index++;
       var queryPath=url.parse(request.url,true);
       //var pathobj = { pathname: queryPath};
-       console.log("QUERYPATH: ", queryPath.path);
-       requestBody['path'] = queryPath.path;
+      console.log("QUERYPATH: ", queryPath.path);
+      requestBody['path'] = queryPath.path;
       // if (obj[queryPath]){
       //   obj[queryPath].push(requestedBody);
       // }
@@ -80,11 +100,13 @@ var requestHandler = function(request, response) {
       //   obj[queryPath].push(requestedBody);
 
       // }
-      //underscore.extend(requestBody, pathobj);
       console.log("REQUESTBBBODY: ", requestBody);
       obj.results.push(requestBody);
+      var myPath=queryPath.path.slice(9);
+      obj[myPath]["results"].push(requestBody);
       console.log(obj);
     });
+
     response.writeHead(201, headers);
     response.end(JSON.stringify(obj));
   }

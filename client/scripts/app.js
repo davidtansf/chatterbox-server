@@ -31,7 +31,7 @@ app.init = function(){
 app.send = function(message){
   $.ajax({
 	  // This is the url you should use to communicate with the parse API server.
-	  url: 'http://127.0.0.1:3000',
+	  url: 'http://127.0.0.1:3000/classes/'+message.roomname+'',
 	  type: 'POST',
 	  data: JSON.stringify(message),
 	  contentType: 'application/json',
@@ -48,7 +48,7 @@ app.send = function(message){
 app.fetch = function(filter){
 var result = $.ajax({
 	  // This is the url you should use to communicate with the parse API server.
-	  url: 'http://127.0.0.1:3000',
+	  url: 'http://127.0.0.1:3000/classes/'+currentRoom+'',
 	  type: 'GET',
 	  //data: ,/*'where=' + filter,*/
 	  contentType: 'application/json',
