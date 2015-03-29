@@ -8,6 +8,8 @@ var currentRoom = "Lobby";
 var friends = {};
 
 var filter = '{"createdAt" : {"$gte" : "' + currentDate + '"}}';
+
+
 var app = {
 	server : 'http://127.0.0.1:3000'
 };
@@ -20,9 +22,9 @@ var Message = function(username, text, roomname){
 
 app.init = function(){
 	$('#messageBox').focus();
-	
+
 	setInterval(function(){
-		
+
 		console.log(filter);
 		app.fetch(filter);
 	}, 7000);
@@ -92,22 +94,22 @@ app.escapeCharacters = function(message){
 
 app.addMessage = function(message){
 	message = app.escapeCharacters(message);
-  if (message.roomname === currentRoom || currentRoom === "Lobby"){	
+  if (message.roomname === currentRoom || currentRoom === "Lobby"){
 		$('#chats').prepend('<div class="chat ' + message.roomname + '"></div>').hide().slideToggle();
 		$('#chats').children().first().append('<div class="username ' + message.username +'">'+ message.username +'</div>');
 		$('#chats').children().first().append('<div class="message">'+ message.text +'</div>');
   	//$('#chats').children().fadeIn();
   }
-  
+
 	if(friends[message.username]){
 		$('#chats').find('.' + message.username).addClass("friend");
 	}
-	
+
 }
 
 app.addRoom = function(roomName){
 
-	$('#roomSelect').append('<option value="' + roomName + '">' + roomName + '</option>');	
+	$('#roomSelect').append('<option value="' + roomName + '">' + roomName + '</option>');
 	currentRoom = roomName;
 	$('#roomSelect').val(roomName);
 	console.log('current room', roomName);
