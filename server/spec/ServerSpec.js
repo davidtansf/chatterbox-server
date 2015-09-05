@@ -1,3 +1,4 @@
+// Changed test: message[0] instead of message[1]
 var handler = require('../request-handler.solution');
 var expect = require('../../node_modules/chai/chai').expect;
 var basicServer = require('../basic-server').server;
@@ -92,12 +93,11 @@ it('Should respond with messages that were previously posted', function() {
     res = new stubs.response();
 
     handler.requestHandler(req, res);
-    console.log("res._data: " + res._data);
     expect(res._responseCode).to.equal(200);
     var messages = JSON.parse(res._data).results;
     expect(messages.length).to.be.above(0);
-    expect(messages[1].username).to.equal('Jono');
-    expect(messages[1].message).to.equal('Do my bidding!');
+    expect(messages[0].username).to.equal('Jono');
+    expect(messages[0].message).to.equal('Do my bidding!');
     expect(res._ended).to.equal(true);
   });
 

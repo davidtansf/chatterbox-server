@@ -1,3 +1,4 @@
+// Changed test: message[0] instead of message[1]
 var request = require('request');
 var expect = require('../../node_modules/chai/chai').expect;
 var basicServer = require('../basic-server').server;
@@ -60,8 +61,8 @@ describe('server', function() {
       // Now if we request the log, that message we posted should be there:
       request('http://127.0.0.1:3000/classes/messages', function(error, response, body) {
           var messages = JSON.parse(body).results;
-          expect(messages[1].username).to.equal('Jono');
-          expect(messages[1].message).to.equal('Do my bidding!');
+          expect(messages[0].username).to.equal('Jono');
+          expect(messages[0].message).to.equal('Do my bidding!');
           done();
         });
     });
